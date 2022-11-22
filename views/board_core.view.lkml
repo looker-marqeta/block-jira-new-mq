@@ -5,6 +5,7 @@ view: board {
 }
 
 view: board_core {
+  extension: required
   sql_table_name: @{SCHEMA_NAME}.board ;;
 
   dimension: id {
@@ -15,7 +16,6 @@ view: board_core {
 
   dimension_group: _fivetran_synced {
     type: time
-    hidden: yes
     timeframes: [
       raw,
       time,

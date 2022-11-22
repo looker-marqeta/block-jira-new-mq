@@ -5,6 +5,7 @@ view: project {
 }
 
 view: project_core {
+  extension: required
   sql_table_name: @{SCHEMA_NAME}.project ;;
 
   dimension: id {
@@ -46,7 +47,6 @@ view: project_core {
   dimension: project_category_id {
     type: number
     sql: ${TABLE}.PROJECT_CATEGORY_ID ;;
-    hidden: yes
   }
 
   measure: count {

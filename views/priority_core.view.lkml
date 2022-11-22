@@ -5,6 +5,7 @@ view: priority {
 }
 
 view: priority_core {
+  extension: required
   sql_table_name: @{SCHEMA_NAME}.priority ;;
 
   dimension: id {
@@ -15,7 +16,6 @@ view: priority_core {
 
   dimension_group: _fivetran_synced {
     type: time
-    hidden:  yes
     timeframes: [
       raw,
       time,

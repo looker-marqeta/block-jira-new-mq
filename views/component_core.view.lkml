@@ -5,6 +5,7 @@ view: component {
 }
 
 view: component_core {
+  extension: required
   sql_table_name: @{SCHEMA_NAME}.component ;;
 
   dimension: id {

@@ -5,6 +5,7 @@ view: epic {
 }
 
 view: epic_core {
+  extension: required
   sql_table_name: @{SCHEMA_NAME}.epic ;;
 
   dimension: id {
@@ -54,6 +55,6 @@ view: epic_core {
 
   measure: count {
     type: count
-    drill_fields: [id, name]
+    drill_fields: [id, name, issue_epic_link_history.count]
   }
 }

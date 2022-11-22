@@ -5,6 +5,7 @@ view: issue_type {
 }
 
 view: issue_type_core {
+  extension: required
   sql_table_name: @{SCHEMA_NAME}.issue_type ;;
 
   dimension: id {
@@ -15,7 +16,6 @@ view: issue_type_core {
 
   dimension_group: _fivetran_synced {
     type: time
-    hidden:  yes
     timeframes: [
       raw,
       time,

@@ -5,6 +5,7 @@ view: status_category {
 }
 
 view: status_category_core {
+  extension: required
   sql_table_name: @{SCHEMA_NAME}.status_category ;;
 
   dimension: id {

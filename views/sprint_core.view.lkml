@@ -5,6 +5,7 @@ view: sprint {
 }
 
 view: sprint_core {
+  extension: required
   sql_table_name: @{SCHEMA_NAME}.sprint ;;
 
   dimension: id {

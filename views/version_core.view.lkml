@@ -5,6 +5,7 @@ view: version {
 }
 
 view: version_core {
+  extension: required
   sql_table_name: @{SCHEMA_NAME}.version ;;
 
   dimension: id {
