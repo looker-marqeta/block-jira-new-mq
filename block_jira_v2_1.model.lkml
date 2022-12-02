@@ -9,9 +9,9 @@ explore: sprint {
   extends: [sprint_config]
 }
 
-# explore: version {
-#   extends: [version_config]
-# }
+explore: version {
+  extends: [version_config]
+}
 
 explore: issue {
   extends: [issue_config]
