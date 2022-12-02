@@ -1,38 +1,9 @@
-include: "/views/*.view"
-
-explore: issue {
-
-  join: issue_board {
-    fields: []
-    type: left_outer
-    sql_on: ${issue_board.issue_id} = ${issue.id} ;;
-    relationship: one_to_many
-  }
-  join: board {
-    type: left_outer
-    sql_on: ${issue_board.board_id} = ${board.id} ;;
-    relationship: one_to_many
-  }
-  # join: epic {
-  #   type: left_outer
-  #   sql_on:  ${issue.epic_link} = ${epic.id} ;;
-  #   relationship: one_to_many
-  # }
-  join: project_board {
-    fields: []
-    type: left_outer
-    sql_on: ${board.id} = ${project_board.board_id} ;;
-    relationship: one_to_many
-  }
+explore: issue_core {
+  extension: required
   join: project {
     type: left_outer
-    sql_on:  ${project_board.project_id} = ${project.id}  ;;
+    sql_on: ${project.id} = ${issue.project} ;;
     relationship: one_to_many
-  }
-  join: sla {
-    type: left_outer
-    sql_on: ${issue.id} = ${sla.issue_id} ;;
-    relationship: many_to_one
   }
   join:  issue_type {
     type:  left_outer
@@ -59,11 +30,6 @@ explore: issue {
     sql_on: ${issue.status} = ${status.id} ;;
     relationship: many_to_one
   }
-  join:  resolution {
-    type:  left_outer
-    sql_on: ${issue.resolution} = ${resolution.id} ;;
-    relationship: many_to_one
-  }
   join:  status_category {
     type:  left_outer
     sql_on: ${status.status_category_id} = ${status_category.id} ;;
@@ -84,11 +50,4 @@ explore: issue {
     sql_on: ${issue.epic_name} = ${epic.name} ;;
     relationship: many_to_one
   }
-  join: worklog {
-    type: left_outer
-    sql_on: ${issue.id} = ${worklog.issue_id} ;;
-    relationship: one_to_many
-  }
-
-
 }

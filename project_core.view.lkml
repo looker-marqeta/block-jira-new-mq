@@ -14,12 +14,6 @@ view: project_core {
     sql: ${TABLE}.ID ;;
   }
 
-  dimension: lead_id {
-    type: number
-    sql: ${TABLE}.LEAD_ID ;;
-    hidden: yes
-  }
-
   dimension_group: _FIVETRAN_SYNCED {
     type: time
     timeframes: [

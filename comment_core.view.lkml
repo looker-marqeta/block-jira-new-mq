@@ -33,6 +33,11 @@ view: comment_core {
     sql: ${TABLE}.AUTHOR_ID ;;
   }
 
+  dimension: body {
+    type: string
+    sql: ${TABLE}.BODY ;;
+  }
+
   dimension_group: created {
     type: time
     timeframes: [
@@ -49,6 +54,7 @@ view: comment_core {
 
   dimension: issue_id {
     type: number
+    # hidden: yes
     sql: ${TABLE}.ISSUE_ID ;;
   }
 

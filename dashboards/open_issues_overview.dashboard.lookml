@@ -4,7 +4,7 @@
   elements:
   - title: Open Issue Type Distribution
     name: Open Issue Type Distribution
-    model: block_jira_v2
+    model: block_jira
     explore: issue
     type: looker_pie
     fields: [issue_type.name, issue.count]
@@ -31,7 +31,7 @@
     height: 6
   - title: Open Issues Status Distribution
     name: Open Issues Status Distribution
-    model: block_jira_v2
+    model: block_jira
     explore: issue
     type: looker_pie
     fields: [issue.count, status.name]
@@ -58,10 +58,10 @@
     height: 6
   - title: Open Issues
     name: Open Issues
-    model: block_jira_v2
+    model: block_jira
     explore: issue
     type: single_value
-    fields: [issue.number_of_open_issues]
+    fields: [issue.number_of_open_issues, issue.number_of_open_issues_this_month]
     filters:
       status_category.name: "-Done"
     limit: 500
@@ -84,7 +84,7 @@
     height: 4
   - title: Open Issues by Project
     name: Open Issues by Project
-    model: block_jira_v2
+    model: block_jira
     explore: issue
     type: looker_bar
     fields: [project.name, issue.count, issue_type.name]
@@ -147,16 +147,16 @@
     height: 12
   - title: Total Open Issues by Created Date and Type
     name: Total Open Issues by Created Date and Type
-    model: block_jira_v2
+    model: block_jira
     explore: issue
     type: looker_area
-    fields: [issue_type.name, issue.count]
+    fields: [issue.created_month, issue_type.name, issue.count]
     pivots: [issue_type.name]
-    #fill_fields: [issue.created_month]
+    fill_fields: [issue.created_month]
     filters:
-     # issue.created_month: 12 months
+      issue.created_month: 12 months
       status_category.name: "-Done"
-    sorts: [issue_type.name 0]
+    sorts: [issue.created_month desc, issue_type.name 0]
     limit: 500
     color_application:
       collection_id: 5b121cce-cf79-457c-a52a-9162dc174766
@@ -217,7 +217,7 @@
     height: 16
   - title: Total Open Issues by Assignee
     name: Total Open Issues by Assignee
-    model: block_jira_v2
+    model: block_jira
     explore: issue
     type: looker_bar
     fields: [user.name, issue.count, issue_type.name]
@@ -286,7 +286,7 @@
     height: 12
   - title: Issues by Epic and Status
     name: Issues by Epic and Status
-    model: block_jira_v2
+    model: block_jira
     explore: issue
     type: looker_column
     fields: [epic.name, status.name, issue.number_of_open_issues]
@@ -343,7 +343,7 @@
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: block_jira_v2
+    model: block_jira
     explore: issue
     listens_to_filters: []
     field: project.name
@@ -353,7 +353,7 @@
     default_value: ''
     allow_multiple_values: true
     required: false
-    model: block_jira_v2
+    model: block_jira
     explore: issue
     listens_to_filters: []
     field: epic.name

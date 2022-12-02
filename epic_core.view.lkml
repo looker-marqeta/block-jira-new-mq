@@ -14,11 +14,6 @@ view: epic_core {
     sql: ${TABLE}.id ;;
   }
 
-  dimension: board_id {
-    type: number
-    sql: ${TABLE}.board_id ;;
-  }
-
   dimension_group: _fivetran_synced {
     type: time
     timeframes: [
