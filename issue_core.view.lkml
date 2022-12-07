@@ -1,4 +1,6 @@
 include: "issue.view"
+include: "user.view"
+
 
 view: issue {
   extends: [issue_config]
@@ -318,9 +320,15 @@ view: issue_core {
   #  ]
   #}
 
+  # set: issue_open_drill_set {
+  #   fields: [key, created_date, status_category.name, assignee]
+  # }
+
   set: issue_open_drill_set {
-    fields: [key, created_date, status_category.name, assignee]
+    fields: [key,user.name,summary]
   }
+
+
 
   set: issue_closed_drill_set {
     fields: [key, resolved_date, assignee]
