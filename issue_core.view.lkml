@@ -1,5 +1,6 @@
 include: "issue.view"
 include: "user.view"
+include: "status.view"
 
 
 view: issue {
@@ -325,7 +326,7 @@ view: issue_core {
   # }
 
   set: issue_open_drill_set {
-    fields: [key,user.name,summary]
+    fields: [key,user.name,summary, status.name]
   }
 
 

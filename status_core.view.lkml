@@ -35,6 +35,7 @@ view: status_core {
 
   dimension: name {
     type: string
+    label: "Status"
     sql: ${TABLE}.NAME ;;
   }
 
