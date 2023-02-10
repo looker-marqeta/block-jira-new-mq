@@ -83,12 +83,12 @@ view: issue_custom_fields_pivot {
   }
 
   dimension: project_start {
-    type:  string
+    type:  date
     sql: ${TABLE}.project_start ;;
   }
 
   dimension: project_complete {
-    type:  string
+    type:  date
     sql: ${TABLE}.project_complete ;;
   }
 
