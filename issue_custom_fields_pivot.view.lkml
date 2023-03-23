@@ -14,6 +14,10 @@ view: issue_custom_fields_pivot {
           ,'project size'
           ,'v2mom method fy23'
           ,'v2mom method fy22'
+          ,'stakeholders'
+          ,'product stage'
+          ,'b&mm product'
+          ,'prodops category'
         )
         group by 1,2
         )
@@ -60,7 +64,11 @@ view: issue_custom_fields_pivot {
           ,'Project Size'
           ,'V2MOM Method FY22'
           ,'V2MOM Method FY23'
-            )) as p(key, issue_id, labels, project_start, project_complete, project_size, v2mom_method_fy22, v2mom_method_fy23)
+          ,'Stakeholders'
+          ,'Product Stage'
+          ,'ProdOps Category'
+          ,'B&MM product'
+            )) as p(key, issue_id, labels, project_start, project_complete, project_size, v2mom_method_fy22, v2mom_method_fy23,stakeholders,product_stage,prodops_category,bmm_product)
 
   ;;
 
@@ -106,6 +114,27 @@ view: issue_custom_fields_pivot {
     type:  string
     sql: ${TABLE}.v2mom_method_fy23 ;;
   }
+
+  dimension: stakeholders {
+    type:  string
+    sql: ${TABLE}.stakeholders ;;
+  }
+
+  dimension: product_stage {
+    type:  string
+    sql: ${TABLE}.product_stage ;;
+  }
+
+  dimension: prodops_category {
+    type:  string
+    sql: ${TABLE}.prodops_category ;;
+  }
+
+  dimension: bmm_product {
+    type:  string
+    sql: ${TABLE}.bmm_product ;;
+  }
+
 
   measure: count {
     type: count
