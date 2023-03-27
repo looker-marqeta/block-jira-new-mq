@@ -18,6 +18,7 @@ view: issue_custom_fields_pivot {
           ,'product stage'
           ,'b&mm product'
           ,'prodops category'
+          ,'epic link'
         )
         group by 1,2
         )
@@ -36,7 +37,7 @@ view: issue_custom_fields_pivot {
               and imh.is_active = 'TRUE'
           join field_categories fc
               on imh.field_id = fc.field_id
-              and fc.field_name <> 'Partner'
+              and fc.field_name not in ('Partner', 'Epic Link')
           left join fivetran.jira.field_option fo
               on imh.value = fo.id::varchar
 
@@ -53,8 +54,27 @@ view: issue_custom_fields_pivot {
               and ifh.is_active = 'TRUE'
           join field_categories fc
               on ifh.field_id = fc.field_id
+              and fc.field_name not in ('Epic Link')
           left join fivetran.jira.field_option fo
               on ifh.value = fo.id::varchar
+
+          UNION ALL
+
+          select
+            issue.key
+            ,issue.id as issue_id
+            ,fc.field_name
+            ,name as field_value --epic name
+          from fivetran.jira.issue issue
+          join fivetran.jira.issue_field_history ifh
+              on issue.id = ifh.issue_id
+              and ifh.is_active = 'TRUE'
+          join field_categories fc
+              on ifh.field_id = fc.field_id
+              and fc.field_name in ('Epic Link')
+          left join fivetran.jira.epic epic
+              on ifh.value = epic.id::varchar
+
         )
         --pivot results of above sub-query union to create columns for each field_name; can take max(field_value) since there's 1:1 relationship
         pivot (max(field_value) for field_name in (
@@ -68,7 +88,22 @@ view: issue_custom_fields_pivot {
           ,'Product Stage'
           ,'ProdOps Category'
           ,'B&MM product'
-            )) as p(key, issue_id, labels, project_start, project_complete, project_size, v2mom_method_fy22, v2mom_method_fy23,stakeholders,product_stage,prodops_category,bmm_product)
+          ,'Epic Link'
+          )) as p(
+                  key
+                  ,issue_id
+                  ,labels
+                  ,project_start
+                  ,project_complete
+                  ,project_size
+                  ,v2mom_method_fy22
+                  ,v2mom_method_fy23
+                  ,stakeholders
+                  ,product_stage
+                  ,prodops_category
+                  ,bmm_product
+                  ,epic_link
+                  )
 
   ;;
 
@@ -135,6 +170,10 @@ view: issue_custom_fields_pivot {
     sql: ${TABLE}.bmm_product ;;
   }
 
+  dimension: epic_link {
+    type:  string
+    sql: ${TABLE}.epic_link ;;
+  }
 
   measure: count {
     type: count
