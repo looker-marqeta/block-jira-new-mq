@@ -19,6 +19,12 @@ view: issue_custom_fields_pivot {
           ,'b&mm product'
           ,'prodops category'
           ,'epic link'
+          ,'incident-severity'
+          ,'identification source'
+          ,'incident-repeat outage'
+          ,'impact start time'
+          ,'detection time'
+          ,'stable time'
         )
         group by 1,2
         )
@@ -89,8 +95,12 @@ view: issue_custom_fields_pivot {
           ,'ProdOps Category'
           ,'B&MM product'
           ,'Epic Link'
+          ,'Incident-Severity'
           ,'Identification Source'
           ,'Incident-Repeat Outage'
+          ,'Impact Start Time'
+          ,'Detection Time'
+          ,'Stable Time'
           )) as p(
                   key
                   ,issue_id
@@ -105,10 +115,14 @@ view: issue_custom_fields_pivot {
                   ,prodops_category
                   ,bmm_product
                   ,epic_link
+                  ,incident_severity
                   ,identification_source
                   ,incident_repeate_outage
+                  ,impact_start_time
+                  ,detection_time
+                  ,stable_time
                   )
-  ;;
+;;
 
   }
 
@@ -176,6 +190,16 @@ view: issue_custom_fields_pivot {
   dimension: epic_link {
     type:  string
     sql: ${TABLE}.epic_link ;;
+  }
+
+  dimension: identification_source {
+    type:  string
+    sql: ${TABLE}.identification_source ;;
+  }
+
+  dimension: incident_repeat_outage {
+    type: string
+    sql: ${TABLE}.incident_repeat_outage ;;
   }
 
   measure: count {
