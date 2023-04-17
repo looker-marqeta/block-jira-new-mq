@@ -89,6 +89,8 @@ view: issue_custom_fields_pivot {
           ,'ProdOps Category'
           ,'B&MM product'
           ,'Epic Link'
+          ,'Identification Source'
+          ,'Incident-Repeat Outage'
           )) as p(
                   key
                   ,issue_id
@@ -103,8 +105,9 @@ view: issue_custom_fields_pivot {
                   ,prodops_category
                   ,bmm_product
                   ,epic_link
+                  ,identification_source
+                  ,incident_repeate_outage
                   )
-
   ;;
 
   }
