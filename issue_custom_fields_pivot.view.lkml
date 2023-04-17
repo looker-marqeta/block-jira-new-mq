@@ -22,9 +22,6 @@ view: issue_custom_fields_pivot {
           ,'incident-severity'
           ,'identification source'
           ,'incident-repeat outage'
-          ,'impact start time'
-          ,'detection time'
-          ,'stable time'
         )
         group by 1,2
         )
@@ -98,9 +95,6 @@ view: issue_custom_fields_pivot {
           ,'Incident-Severity'
           ,'Identification Source'
           ,'Incident-Repeat Outage'
-          ,'Impact Start Time'
-          ,'Detection Time'
-          ,'Stable Time'
           )) as p(
                   key
                   ,issue_id
@@ -118,9 +112,6 @@ view: issue_custom_fields_pivot {
                   ,incident_severity
                   ,identification_source
                   ,incident_repeate_outage
-                  ,impact_start_time
-                  ,detection_time
-                  ,stable_time
                   )
 ;;
 
