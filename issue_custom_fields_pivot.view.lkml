@@ -111,7 +111,7 @@ view: issue_custom_fields_pivot {
                   ,epic_link
                   ,incident_severity
                   ,identification_source
-                  ,incident_repeate_outage
+                  ,incident_repeat_outage
                   )
 ;;
 
