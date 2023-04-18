@@ -35,7 +35,7 @@ view: issue_custom_fields_pivot {
             ,fc.field_name
             ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete') then imh.value else fo.name end as field_value
           from fivetran.jira.issue issue
-          join fivetran.jira.issue_multiselect_history imh
+          join fivetran.jira.issue_multiselect_history imh -- For fields with multiple options
               on issue.id = imh.issue_id
               and imh.is_active = 'TRUE'
           join field_categories fc
@@ -52,7 +52,7 @@ view: issue_custom_fields_pivot {
             ,fc.field_name
             ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete') then ifh.value else fo.name end as field_value
           from fivetran.jira.issue issue
-          join fivetran.jira.issue_field_history ifh
+          join fivetran.jira.issue_field_history ifh -- for fields with only 1 option
               on issue.id = ifh.issue_id
               and ifh.is_active = 'TRUE'
           join field_categories fc
@@ -75,7 +75,7 @@ view: issue_custom_fields_pivot {
           join field_categories fc
               on ifh.field_id = fc.field_id
               and fc.field_name in ('Epic Link')
-          left join fivetran.jira.epic epic
+          left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
               on ifh.value = epic.id::varchar
 
         )
