@@ -185,6 +185,11 @@ view: issue_custom_fields_pivot {
     sql: ${TABLE}.epic_link ;;
   }
 
+  dimension: incident_severity {
+    type:  string
+    sql: ${TABLE}.incident_severity ;;
+  }
+
   dimension: identification_source {
     type:  string
     sql: ${TABLE}.identification_source ;;
