@@ -75,7 +75,8 @@ view: issue_core {
       week,
       month,
       quarter,
-      year
+      year,
+      month_name
     ]
     sql: ${TABLE}.created ;;
   }
