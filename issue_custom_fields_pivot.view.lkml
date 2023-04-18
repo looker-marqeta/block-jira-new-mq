@@ -202,12 +202,8 @@ view: issue_custom_fields_pivot {
         label: "SEV2"
       }
       when: {
-        sql: ${TABLE}.incident_severity = 'SEV1' ;;
-        label: "SEV1"
-      }
-      when: {
-        sql: ${TABLE}.incident_severity = 'SEV0';;
-        label: "SEV0"
+        sql: ${TABLE}.incident_severity in ('SEV1', 'SEV0') ;;
+        label: "SEV0 or 1"
       }
       # Possibly more when statements
       else: "Null"
