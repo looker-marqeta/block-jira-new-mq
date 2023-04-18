@@ -190,6 +190,38 @@ view: issue_custom_fields_pivot {
     sql: ${TABLE}.incident_severity ;;
   }
 
+  dimension: severity_level {
+    type:  string
+    case: {
+      when: {
+        sql: ${TABLE}.incident_severity = "SEV3" ;;
+        label: "SEV3+"
+      }
+      when: {
+        sql: ${TABLE}.incident_severity = "SEV4" ;;
+        label: "SEV3+"
+      }
+      when: {
+        sql: ${TABLE}.incident_severity = "SEV5" ;;
+        label: "SEV3+"
+      }
+      when: {
+        sql: ${TABLE}.incident_severity = "SEV2" ;;
+        label: "SEV2"
+      }
+      when: {
+        sql: ${TABLE}.incident_severity = "SEV1" ;;
+        label: "SEV1"
+      }
+      when: {
+        sql: ${TABLE}.incident_severity = "SEV0" ;;
+        label: "SEV0"
+      }
+      # Possibly more when statements
+      else: "Null"
+    }
+    alpha_sort: yes}
+
   dimension: identification_source {
     type:  string
     sql: ${TABLE}.identification_source ;;
