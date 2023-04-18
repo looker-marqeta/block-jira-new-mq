@@ -194,33 +194,33 @@ view: issue_custom_fields_pivot {
     type:  string
     case: {
       when: {
-        sql: ${TABLE}.incident_severity = "SEV3" ;;
+        sql: ${TABLE}.incident_severity = 'SEV3' ;;
         label: "SEV3+"
       }
       when: {
-        sql: ${TABLE}.incident_severity = "SEV4" ;;
+        sql: ${TABLE}.incident_severity = 'SEV4' ;;
         label: "SEV3+"
       }
       when: {
-        sql: ${TABLE}.incident_severity = "SEV5" ;;
+        sql: ${TABLE}.incident_severity = 'SEV5' ;;
         label: "SEV3+"
       }
       when: {
-        sql: ${TABLE}.incident_severity = "SEV2" ;;
+        sql: ${TABLE}.incident_severity = 'SEV2' ;;
         label: "SEV2"
       }
       when: {
-        sql: ${TABLE}.incident_severity = "SEV1" ;;
+        sql: ${TABLE}.incident_severity = 'SEV1' ;;
         label: "SEV1"
       }
       when: {
-        sql: ${TABLE}.incident_severity = "SEV0" ;;
+        sql: ${TABLE}.incident_severity = 'SEV0';;
         label: "SEV0"
       }
       # Possibly more when statements
       else: "Null"
     }
-    alpha_sort: yes}
+}
 
   dimension: identification_source {
     type:  string
