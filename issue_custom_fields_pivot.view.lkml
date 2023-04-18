@@ -224,7 +224,7 @@ view: issue_custom_fields_pivot {
     type: count
     drill_fields: []
   }
-  measure: percent_of_total_gross_margin {
+  measure: percent_of_total {
     type: percent_of_total
     sql: ${count} ;;
   }
