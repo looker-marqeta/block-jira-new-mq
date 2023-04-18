@@ -121,11 +121,13 @@ view: issue_custom_fields_pivot {
   dimension: key {
      type: string
      sql: ${TABLE}.key ;;
+     primary_key: yes
    }
 
   dimension: issue_id {
     type: string
     sql: ${TABLE}.issue_id ;;
+    primary_key: yes
   }
 
   dimension: labels {
