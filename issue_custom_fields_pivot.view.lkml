@@ -225,4 +225,7 @@ view: issue_custom_fields_pivot {
     drill_fields: []
   }
 
+  measure: percentage {
+    type: percent_of_total
+  }
 }
