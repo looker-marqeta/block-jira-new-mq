@@ -194,15 +194,7 @@ view: issue_custom_fields_pivot {
     type:  string
     case: {
       when: {
-        sql: ${TABLE}.incident_severity = 'SEV3' ;;
-        label: "SEV3+"
-      }
-      when: {
-        sql: ${TABLE}.incident_severity = 'SEV4' ;;
-        label: "SEV3+"
-      }
-      when: {
-        sql: ${TABLE}.incident_severity = 'SEV5' ;;
+        sql: ${TABLE}.incident_severity in ('SEV3', 'SEV4', 'SEV5') ;;
         label: "SEV3+"
       }
       when: {
