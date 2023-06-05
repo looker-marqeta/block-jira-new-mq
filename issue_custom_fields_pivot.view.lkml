@@ -22,6 +22,8 @@ view: issue_custom_fields_pivot {
           ,'incident-severity'
           ,'identification source'
           ,'incident-repeat outage'
+          ,'impact start time'
+          ,'stable time'
         )
         group by 1,2
         )
@@ -95,6 +97,8 @@ view: issue_custom_fields_pivot {
           ,'Incident-Severity'
           ,'Identification Source'
           ,'Incident-Repeat Outage'
+          ,'Impact Start Time'
+          ,'Stable Time'
           )) as p(
                   key
                   ,issue_id
@@ -112,6 +116,8 @@ view: issue_custom_fields_pivot {
                   ,incident_severity
                   ,identification_source
                   ,incident_repeat_outage
+                  ,impact_start_time
+                  ,stable_time
                   )
 ;;
 
@@ -209,6 +215,21 @@ view: issue_custom_fields_pivot {
       else: "Null"
     }
 }
+
+  dimension_group: impact_start_time {
+    group_label: "Dates"
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.impact_start_time ;;
+  }
 
   dimension: identification_source {
     type:  string
