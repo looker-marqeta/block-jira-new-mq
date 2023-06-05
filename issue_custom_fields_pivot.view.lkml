@@ -253,6 +253,11 @@ view: issue_custom_fields_pivot {
     sql_end: ${TABLE}.stable_time ;;
   }
 
+  measure: days_of_impact {
+    type: sum
+    sql: ${days_customer_impact} ;;
+  }
+
   dimension: identification_source {
     type:  string
     sql: ${TABLE}.identification_source ;;
