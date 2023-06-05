@@ -35,7 +35,7 @@ view: issue_custom_fields_pivot {
             issue.key
             ,issue.id as issue_id
             ,fc.field_name
-            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete') then imh.value else fo.name end as field_value
+            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete', 'impact start time', 'stable time') then imh.value else fo.name end as field_value
           from fivetran.jira.issue issue
           join fivetran.jira.issue_multiselect_history imh -- For fields with multiple options
               on issue.id = imh.issue_id
@@ -52,7 +52,7 @@ view: issue_custom_fields_pivot {
             issue.key
             ,issue.id as issue_id
             ,fc.field_name
-            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete') then ifh.value else fo.name end as field_value
+            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete', 'impact start time', 'stable time') then imh.value else fo.name end as field_value
           from fivetran.jira.issue issue
           join fivetran.jira.issue_field_history ifh -- for fields with only 1 option
               on issue.id = ifh.issue_id
