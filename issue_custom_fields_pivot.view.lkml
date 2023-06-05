@@ -247,7 +247,6 @@ view: issue_custom_fields_pivot {
   }
 
   dimension_group: customer_impact {
-    group_label: "Stable Time"
     type: duration
     intervals: [day]
     sql_start: ${TABLE}.impact_start_time ;;
