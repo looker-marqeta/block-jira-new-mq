@@ -217,7 +217,7 @@ view: issue_custom_fields_pivot {
 }
 
   dimension_group: impact_start_time {
-    group_label: "Dates"
+    group_label: "Impact Start Time"
     type: time
     timeframes: [
       raw,
@@ -229,6 +229,21 @@ view: issue_custom_fields_pivot {
       year
     ]
     sql: ${TABLE}.impact_start_time ;;
+  }
+
+  dimension_group: stable_time {
+    group_label: "Stable Time"
+    type: time
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.stable_time ;;
   }
 
   dimension: identification_source {
