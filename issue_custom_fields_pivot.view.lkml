@@ -24,6 +24,7 @@ view: issue_custom_fields_pivot {
           ,'incident-repeat outage'
           ,'impact start time'
           ,'stable time'
+          ,'incident-type'
         )
         group by 1,2
         )
@@ -99,6 +100,7 @@ view: issue_custom_fields_pivot {
           ,'Incident-Repeat Outage'
           ,'Impact Start Time'
           ,'Stable Time'
+          ,'Incident-Type'
           )) as p(
                   key
                   ,issue_id
@@ -118,6 +120,7 @@ view: issue_custom_fields_pivot {
                   ,incident_repeat_outage
                   ,impact_start_time
                   ,stable_time
+                  ,incident_type
                   )
 ;;
 
@@ -266,6 +269,11 @@ view: issue_custom_fields_pivot {
   dimension: incident_repeat_outage {
     type: string
     sql: ${TABLE}.incident_repeat_outage ;;
+  }
+
+  dimension: incident_type {
+    type: string
+    sql: ${TABLE}.incident_type ;;
   }
 
   measure: count {
