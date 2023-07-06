@@ -284,4 +284,10 @@ view: issue_custom_fields_pivot {
     type: percent_of_total
     sql: ${count} ;;
   }
+
+  measure: repeated_perc {
+    type: sum
+    sql: (case when ${incident_repeat_outage} = "Yes" then 1 end) / ${count};;
+    value_format_name: percent_0
+  }
 }
