@@ -285,9 +285,25 @@ view: issue_custom_fields_pivot {
     sql: ${count} ;;
   }
 
+  measure: repeated_inci_count {
+    type: count
+    filters: [incident_repeat_outage: "Yes"]
+  }
+
   measure: repeated_perc {
-    type: sum
-    sql: (case when ${incident_repeat_outage} = "Yes" then 1 end) / ${count};;
+    type: number
+    sql: ${repeated_inci_count} / ${count};;
+    value_format_name: percent_0
+  }
+
+  measure: detected_with_monitor_count {
+    type: count
+    filters: [identification_source: "Detected with Monitoring"]
+  }
+
+  measure: detected_with_monitoring_perc {
+    type: number
+    sql: ${detected_with_monitor_count}/${count} ;;
     value_format_name: percent_0
   }
 }
