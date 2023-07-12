@@ -133,7 +133,7 @@ view: issue_timestamp_pivot {
 
   measure: days_of_impact {
     type: sum
-    sql: ${hours_customer_impact} / 24;;
+    sql: round(${hours_customer_impact} / 24,0);;
   }
 
 
