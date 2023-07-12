@@ -251,14 +251,14 @@ view: issue_custom_fields_pivot {
 
   dimension_group: customer_impact {
     type: duration
-    intervals: [day]
-    sql_start: ${TABLE}.impact_start_time ;;
-    sql_end: ${TABLE}.stable_time ;;
+    intervals: [hour, minute,day]
+    sql_start: ${impact_start_time_time} ;;
+    sql_end: ${stable_time_time} ;;
   }
 
   measure: days_of_impact {
     type: sum
-    sql: ${days_customer_impact} ;;
+    sql: ${hours_customer_impact} / 24;;
   }
 
   dimension: identification_source {
@@ -287,6 +287,7 @@ view: issue_custom_fields_pivot {
 
   measure: repeated_inci_count {
     type: count
+    hidden: yes
     filters: [incident_repeat_outage: "Yes"]
   }
 
@@ -298,6 +299,7 @@ view: issue_custom_fields_pivot {
 
   measure: detected_with_monitor_count {
     type: count
+    hidden: yes
     filters: [identification_source: "Detected with Monitoring"]
   }
 
