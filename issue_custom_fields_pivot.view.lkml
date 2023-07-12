@@ -2,7 +2,7 @@ view: issue_custom_fields_pivot {
   derived_table: {
     sql:
 
-    with field_categories as (
+with field_categories as (
         select
           id as field_id
           ,name as field_name
