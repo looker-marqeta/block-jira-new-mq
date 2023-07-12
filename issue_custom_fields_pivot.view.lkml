@@ -22,8 +22,6 @@ with field_categories as (
           ,'incident-severity'
           ,'identification source'
           ,'incident-repeat outage'
-          ,'impact start time'
-          ,'stable time'
           ,'incident-type'
         )
         group by 1,2
@@ -36,7 +34,7 @@ with field_categories as (
             issue.key
             ,issue.id as issue_id
             ,fc.field_name
-            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete', 'impact start time', 'stable time') then imh.value else fo.name end as field_value
+            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete') then imh.value else fo.name end as field_value
           from fivetran.jira.issue issue
           join fivetran.jira.issue_multiselect_history imh -- For fields with multiple options
               on issue.id = imh.issue_id
@@ -53,7 +51,7 @@ with field_categories as (
             issue.key
             ,issue.id as issue_id
             ,fc.field_name
-            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete', 'impact start time', 'stable time') then ifh.value else fo.name end as field_value
+            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete') then ifh.value else fo.name end as field_value
           from fivetran.jira.issue issue
           join fivetran.jira.issue_field_history ifh -- for fields with only 1 option
               on issue.id = ifh.issue_id
@@ -98,8 +96,6 @@ with field_categories as (
           ,'Incident-Severity'
           ,'Identification Source'
           ,'Incident-Repeat Outage'
-          ,'Impact Start Time'
-          ,'Stable Time'
           ,'Incident-Type'
           )) as p(
                   key
@@ -118,8 +114,6 @@ with field_categories as (
                   ,incident_severity
                   ,identification_source
                   ,incident_repeat_outage
-                  ,impact_start_time
-                  ,stable_time
                   ,incident_type
                   )
 ;;
@@ -218,48 +212,6 @@ with field_categories as (
       else: "Null"
     }
 }
-
-  dimension_group: impact_start_time {
-    group_label: "Impact Start Time"
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.impact_start_time ;;
-  }
-
-  dimension_group: stable_time {
-    group_label: "Stable Time"
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.stable_time ;;
-  }
-
-  dimension_group: customer_impact {
-    type: duration
-    intervals: [hour, minute,day]
-    sql_start: ${impact_start_time_time} ;;
-    sql_end: ${stable_time_time} ;;
-  }
-
-  measure: days_of_impact {
-    type: sum
-    sql: ${hours_customer_impact} / 24;;
-  }
 
   dimension: identification_source {
     type:  string
