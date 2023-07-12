@@ -21,7 +21,7 @@ view: issue_timestamp_pivot {
             issue.key
             ,issue.id as issue_id
             ,fc.field_name
-            ,case when lower(fc.field_name) in ('impact start time', 'stable time') then imh.value::timestamp_tz else fo.name::timestamp_tz end as field_value
+            ,case when lower(fc.field_name) in ('impact start time', 'stable time') then imh.value::timestamp_ntz else fo.name::timestamp_ntz end as field_value
           from fivetran.jira.issue issue
           join fivetran.jira.issue_multiselect_history imh -- For fields with multiple options
               on issue.id = imh.issue_id
@@ -38,7 +38,7 @@ view: issue_timestamp_pivot {
             issue.key
             ,issue.id as issue_id
             ,fc.field_name
-            ,case when lower(fc.field_name) in ('impact start time', 'stable time') then ifh.value::timestamp_tz else fo.name::timestamp_tz end as field_value
+            ,case when lower(fc.field_name) in ('impact start time', 'stable time') then ifh.value::timestamp_ntz else fo.name::timestamp_ntz end as field_value
           from fivetran.jira.issue issue
           join fivetran.jira.issue_field_history ifh -- for fields with only 1 option
               on issue.id = ifh.issue_id
