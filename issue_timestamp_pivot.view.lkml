@@ -97,7 +97,7 @@ view: issue_timestamp_pivot {
   dimension_group: impact_start_time {
     group_label: "Impact Start Time"
     type: time
-    convert_tz: yes
+    # convert_tz: yes
     timeframes: [
       raw,
       time,
@@ -113,7 +113,7 @@ view: issue_timestamp_pivot {
   dimension_group: stable_time {
     group_label: "Stable Time"
     type: time
-    convert_tz: yes
+    # convert_tz: yes
     timeframes: [
       raw,
       time,
