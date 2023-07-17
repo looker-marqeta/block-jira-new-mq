@@ -255,6 +255,11 @@ with field_categories as (
     filters: [identification_source: "Detected with Monitoring"]
   }
 
+  dimension: detected_with_monitoring {
+    type: yesno
+    sql: ${identification_source} = "Detected with Monitoring" ;;
+  }
+
   measure: detected_with_monitoring_perc {
     type: number
     sql: ${detected_with_monitor_count}/${count} ;;
