@@ -257,7 +257,7 @@ with field_categories as (
 
   dimension: detected_with_monitoring {
     type: yesno
-    sql: ${identification_source} = "Detected with Monitoring" ;;
+    sql: ${identification_source} = 'Detected with Monitoring' ;;
   }
 
   measure: detected_with_monitoring_perc {
