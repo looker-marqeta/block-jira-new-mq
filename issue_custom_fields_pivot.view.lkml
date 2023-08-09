@@ -23,6 +23,7 @@ with field_categories as (
           ,'identification source'
           ,'incident-repeat outage'
           ,'incident-type'
+          ,'vp responsible'
         )
         group by 1,2
         )
@@ -97,6 +98,7 @@ with field_categories as (
           ,'Identification Source'
           ,'Incident-Repeat Outage'
           ,'Incident-Type'
+          ,'VP Responsible'
           )) as p(
                   key
                   ,issue_id
@@ -115,6 +117,7 @@ with field_categories as (
                   ,identification_source
                   ,incident_repeat_outage
                   ,incident_type
+                  ,vp_responsible
                   )
 ;;
 
@@ -226,6 +229,12 @@ with field_categories as (
   dimension: incident_type {
     type: string
     sql: ${TABLE}.incident_type ;;
+  }
+
+  dimension: vp_responsible {
+    type: string
+    sql: ${TABLE}.vp_responsible ;;
+    label: "VP Responsible"
   }
 
   measure: count {
