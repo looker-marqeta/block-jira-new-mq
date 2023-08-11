@@ -24,6 +24,10 @@ with field_categories as (
           ,'incident-repeat outage'
           ,'incident-type'
           ,'vp responsible'
+          ,'partner'
+          ,'impact start time'
+          ,'detection time'
+          ,'stable time'
         )
         group by 1,2
         )
@@ -80,6 +84,29 @@ with field_categories as (
           left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
               on ifh.value = epic.id::varchar
 
+          UNION ALL
+
+          select
+            issue.key
+            ,issue.id as issue_id
+            ,fc.field_name
+            ,array_agg(fo.name) within group (order by fo.name asc)::varchar as field_value
+          from fivetran.jira.issue issue
+          join fivetran.jira.issue_multiselect_history imh
+              on issue.id = imh.issue_id
+              and imh.is_active = 'TRUE'
+          join field_categories fc
+              on imh.field_id = fc.field_id
+              and fc.field_name = 'Partner'
+          left join fivetran.jira.field_option fo
+              on imh.value = fo.id::varchar
+          left join fivetran.jira.status st
+              on imh.value = st.id::varchar
+          group by
+              issue.key
+              ,issue.id
+              ,fc.field_name
+
         )
         --pivot results of above sub-query union to create columns for each field_name; can take max(field_value) since there's 1:1 relationship
         pivot (max(field_value) for field_name in (
@@ -99,6 +126,10 @@ with field_categories as (
           ,'Incident-Repeat Outage'
           ,'Incident-Type'
           ,'VP Responsible'
+          ,'Partner'
+          ,'Impact Start Time'
+          ,'Detection Time'
+          ,'Stable Time'
           )) as p(
                   key
                   ,issue_id
@@ -118,6 +149,10 @@ with field_categories as (
                   ,incident_repeat_outage
                   ,incident_type
                   ,vp_responsible
+                  ,partner
+                  ,impact_start_time
+                  ,detection_time
+                  ,stable_time
                   )
 ;;
 
@@ -235,6 +270,30 @@ with field_categories as (
     type: string
     sql: ${TABLE}.vp_responsible ;;
     label: "VP Responsible"
+  }
+
+  dimension: partner {
+    type: string
+    sql: ${TABLE}.partner ;;
+    label: "Partner"
+  }
+
+  dimension: impact_start_time {
+    type: string
+    sql: ${TABLE}.impact_start_time ;;
+    label: "Impact Start Time"
+  }
+
+  dimension: detection_time {
+    type: string
+    sql: ${TABLE}.detection_time ;;
+    label: "Detection Time"
+  }
+
+  dimension: stable_time {
+    type: string
+    sql: ${TABLE}.stable_time ;;
+    label: "Stable Time"
   }
 
   measure: count {
