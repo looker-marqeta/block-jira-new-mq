@@ -28,6 +28,8 @@ with field_categories as (
           ,'impact start time'
           ,'detection time'
           ,'stable time'
+          ,'authorization impacted'
+
         )
         group by 1,2
         )
@@ -130,6 +132,7 @@ with field_categories as (
           ,'Impact Start Time'
           ,'Detection Time'
           ,'Stable Time'
+          ,'Authorization Impacted'
           )) as p(
                   key
                   ,issue_id
@@ -153,6 +156,7 @@ with field_categories as (
                   ,impact_start_time
                   ,detection_time
                   ,stable_time
+                  ,authorization_impacted
                   )
 ;;
 
@@ -294,6 +298,12 @@ with field_categories as (
     type: string
     sql: ${TABLE}.stable_time ;;
     label: "Stable Time"
+  }
+
+  dimension: authorization_impacted {
+    type: string
+    sql: ${TABLE}.authorization_impacted ;;
+    label: "Authorization Impacted"
   }
 
   measure: count {
