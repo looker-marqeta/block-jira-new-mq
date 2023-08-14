@@ -2,112 +2,76 @@ view: issue_custom_fields_pivot {
   derived_table: {
     sql:
 
-with field_categories as (
-        select
-          id as field_id
-          ,name as field_name
-        from fivetran.jira.field
-        where lower(name) in (
-          'labels'
-          ,'project start'
-          ,'project complete'
-          ,'project size'
-          ,'v2mom method fy23'
-          ,'v2mom method fy22'
-          ,'stakeholders'
-          ,'product stage'
-          ,'b&mm product'
-          ,'prodops category'
-          ,'epic link'
-          ,'incident-severity'
-          ,'identification source'
-          ,'incident-repeat outage'
-          ,'incident-type'
-          ,'vp responsible'
-          ,'partner'
-          ,'impact start time'
-          ,'detection time'
-          ,'stable time'
-          ,'authorization impacted'
-
-        )
-        group by 1,2
-        )
-
         select
           *
         from (
+          --pulls all array field values
           select
             issue.key
             ,issue.id as issue_id
-            ,fc.field_name
-            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete') then imh.value else fo.name end as field_value
+            ,field.name as field_name
+            ,array_agg(
+              case when user.name is not null then user.name --first see if field_name maps to a user
+                when field_option.name is not null then field_option.name --next see if field_name maps to a field option
+                else imh.value end --default to multiselect history value
+                )
+                within group (order by value)::varchar as field_value
           from fivetran.jira.issue issue
           join fivetran.jira.issue_multiselect_history imh -- For fields with multiple options
               on issue.id = imh.issue_id
               and imh.is_active = 'TRUE'
-          join field_categories fc
-              on imh.field_id = fc.field_id
-              and fc.field_name not in ('Partner', 'Epic Link')
-          left join fivetran.jira.field_option fo
-              on imh.value = fo.id::varchar
+          join fivetran.jira.field
+              on imh.field_id = field.id
+              and field.name not in ('Epic Link')
+              and field.is_array = 'TRUE'
+          left join fivetran.jira.field_option field_option
+              on imh.value = field_option.id::varchar
+          left join fivetran.jira.user user
+              on imh.value = user.id
+        group by 1,2,3
+
 
           UNION ALL
 
+          --pull all non-array field values
           select
             issue.key
             ,issue.id as issue_id
-            ,fc.field_name
-            ,case when lower(fc.field_name) in ('labels', 'project start', 'project complete', 'impact start time', 'detection time', 'stable time') then ifh.value else fo.name end as field_value
+            ,field.name as field_name
+             ,case when user.name is not null then user.name
+                 when field_option.name is not null then field_option.name
+                 else ifh.value
+                end as field_value
           from fivetran.jira.issue issue
           join fivetran.jira.issue_field_history ifh -- for fields with only 1 option
               on issue.id = ifh.issue_id
               and ifh.is_active = 'TRUE'
-          join field_categories fc
-              on ifh.field_id = fc.field_id
-              and fc.field_name not in ('Epic Link')
-          left join fivetran.jira.field_option fo
-              on ifh.value = fo.id::varchar
+          join fivetran.jira.field
+              on ifh.field_id = field.id
+              and field.name not in ('Epic Link')
+              and field.is_array = 'FALSE'
+          left join fivetran.jira.field_option field_option
+              on ifh.value = field_option.id::varchar
+          left join fivetran.jira.user user
+              on ifh.value = user.id
 
           UNION ALL
 
+          --specific join to get the Epic Name
           select
             issue.key
             ,issue.id as issue_id
-            ,fc.field_name
-            ,name as field_value --epic name
+            ,'Epic Name' as field_name
+            ,epic.name as field_value --epic name
           from fivetran.jira.issue issue
           join fivetran.jira.issue_field_history ifh
               on issue.id = ifh.issue_id
               and ifh.is_active = 'TRUE'
-          join field_categories fc
-              on ifh.field_id = fc.field_id
-              and fc.field_name in ('Epic Link')
+          join fivetran.jira.field
+              on ifh.field_id = field.id
+              and field.name in ('Epic Link')
           left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
               on ifh.value = epic.id::varchar
-
-          UNION ALL
-
-          select
-            issue.key
-            ,issue.id as issue_id
-            ,fc.field_name
-            ,array_agg(fo.name) within group (order by fo.name asc)::varchar as field_value
-          from fivetran.jira.issue issue
-          join fivetran.jira.issue_multiselect_history imh
-              on issue.id = imh.issue_id
-              and imh.is_active = 'TRUE'
-          join field_categories fc
-              on imh.field_id = fc.field_id
-              and fc.field_name = 'Partner'
-          left join fivetran.jira.field_option fo
-              on imh.value = fo.id::varchar
-          left join fivetran.jira.status st
-              on imh.value = st.id::varchar
-          group by
-              issue.key
-              ,issue.id
-              ,fc.field_name
 
         )
         --pivot results of above sub-query union to create columns for each field_name; can take max(field_value) since there's 1:1 relationship
@@ -122,7 +86,7 @@ with field_categories as (
           ,'Product Stage'
           ,'ProdOps Category'
           ,'B&MM product'
-          ,'Epic Link'
+          ,'Epic Name'
           ,'Incident-Severity'
           ,'Identification Source'
           ,'Incident-Repeat Outage'
@@ -133,6 +97,7 @@ with field_categories as (
           ,'Detection Time'
           ,'Stable Time'
           ,'Authorization Impacted'
+          ,'Due Date (Risk)'
           )) as p(
                   key
                   ,issue_id
@@ -157,6 +122,7 @@ with field_categories as (
                   ,detection_time
                   ,stable_time
                   ,authorization_impacted
+                  ,due_date_risk
                   )
 ;;
 
@@ -304,6 +270,12 @@ with field_categories as (
     type: string
     sql: ${TABLE}.authorization_impacted ;;
     label: "Authorization Impacted"
+  }
+
+  dimension: due_date_risk {
+    type: string
+    sql: ${TABLE}.due_date_risk ;;
+    label: "Due Date (Risk)"
   }
 
   measure: count {
