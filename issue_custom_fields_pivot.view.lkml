@@ -111,7 +111,7 @@ view: issue_custom_fields_pivot {
                   ,product_stage
                   ,prodops_category
                   ,bmm_product
-                  ,epic_link
+                  ,epic_name
                   ,incident_severity
                   ,identification_source
                   ,incident_repeat_outage
@@ -191,9 +191,9 @@ view: issue_custom_fields_pivot {
     sql: ${TABLE}.bmm_product ;;
   }
 
-  dimension: epic_link {
+  dimension: epic_name {
     type:  string
-    sql: ${TABLE}.epic_link ;;
+    sql: ${TABLE}.epic_name ;;
   }
 
   dimension: incident_severity {
