@@ -260,7 +260,7 @@ view: issue_custom_fields_pivot {
       quarter,
       year
     ]
-    sql: ${TABLE}.impact_start_time ;;
+    sql: to_timestamp_ntz(${TABLE}.impact_start_time) ;;
   }
 
   #dimension: impact_start_time {
@@ -282,7 +282,7 @@ view: issue_custom_fields_pivot {
       quarter,
       year
     ]
-    sql: ${TABLE}.detection_time ;;
+    sql: to_timestamp_ntz(${TABLE}.detection_time) ;;
   }
 
  # dimension: detection_time {
@@ -319,10 +319,18 @@ view: issue_custom_fields_pivot {
     label: "Authorization Impacted"
   }
 
-  dimension: due_date_risk {
-    type: string
-    sql: ${TABLE}.due_date_risk ;;
-    label: "Due Date (Risk)"
+  dimension_group: due_date_risk {
+    group_label: "Due Date (Risk)"
+    type: time
+    # convert_tz: yes
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: to_date(${TABLE}.due_date_risk) ;;
   }
 
   dimension: sprint {
@@ -342,7 +350,7 @@ view: issue_custom_fields_pivot {
       quarter,
       year
     ]
-    sql: ${TABLE}.start_date ;;
+    sql: to_date(${TABLE}.start_date) ;;
   }
 
   dimension_group: start_date_timestamp {
@@ -358,7 +366,7 @@ view: issue_custom_fields_pivot {
       quarter,
       year
     ]
-    sql: ${TABLE}.start_date_timestamp ;;
+    sql: to_timestamp_ntz(${TABLE}.start_date_timestamp) ;;
   }
 
   dimension_group: end_date {
@@ -374,7 +382,7 @@ view: issue_custom_fields_pivot {
       quarter,
       year
     ]
-    sql: ${TABLE}.end_date ;;
+    sql: to_timestamp_ntz(${TABLE}.end_date) ;;
   }
 
   measure: count {
