@@ -56,6 +56,8 @@ view: issue_custom_fields_pivot {
               on ifh.value = field_option.id::varchar
           left join fivetran.jira.user user
               on ifh.value = user.id
+          left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
+              on ifh.value = epic.id::varchar
 
 
         )
