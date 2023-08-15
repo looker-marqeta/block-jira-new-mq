@@ -39,7 +39,9 @@ view: issue_custom_fields_pivot {
           select
             issue.key
             ,issue.id as issue_id
-            ,field.name as field_name
+            ,case when field.name = 'Start Date' and field_id = 'customfield_15995' then 'Start Date Timestamp' --multiple Start Date fields; this one is the ts version
+                else field.name
+                end as field_name
              ,case when field.name = 'Epic Link' then epic.name
                  when user.name is not null then user.name
                  when field_option.name is not null then field_option.name
@@ -58,6 +60,7 @@ view: issue_custom_fields_pivot {
               on ifh.value = user.id
           left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
               on ifh.value = epic.id::varchar
+          where field_id not in ('customfield_15076', 'customfield_15230') -- Start Date fields that should be inactive
 
 
         )
@@ -86,6 +89,9 @@ view: issue_custom_fields_pivot {
           ,'Authorization Impacted'
           ,'Due Date (Risk)'
           ,'Sprint'
+          ,'Start Date'
+          ,'Start Date Timestamp'
+          ,'End Date'
           )) as p(
                   key
                   ,issue_id
@@ -112,6 +118,9 @@ view: issue_custom_fields_pivot {
                   ,authorization_impacted
                   ,due_date_risk
                   ,sprint
+                  ,start_date
+                  ,start_date_timestamp
+                  ,end_date
                   )
 ;;
 
@@ -238,23 +247,71 @@ view: issue_custom_fields_pivot {
     label: "Partner"
   }
 
-  dimension: impact_start_time {
-    type: string
+  dimension_group: impact_start_time {
+    group_label: "Impact Start Time"
+    type: time
+    # convert_tz: yes
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.impact_start_time ;;
-    label: "Impact Start Time"
   }
 
-  dimension: detection_time {
-    type: string
+  #dimension: impact_start_time {
+  #  type: string
+  #  sql: ${TABLE}.impact_start_time ;;
+  #  label: "Impact Start Time"
+  #}
+
+  dimension_group: detection_time {
+    group_label: "Detection Time"
+    type: time
+    # convert_tz: yes
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.detection_time ;;
-    label: "Detection Time"
   }
 
-  dimension: stable_time {
-    type: string
+ # dimension: detection_time {
+ #   type: string
+ #   sql: ${TABLE}.detection_time ;;
+ #   label: "Detection Time"
+ # }
+
+  dimension_group: stable_time {
+    group_label: "Stable Time"
+    type: time
+    # convert_tz: yes
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
     sql: ${TABLE}.stable_time ;;
-    label: "Stable Time"
   }
+
+  #dimension: stable_time {
+   # type: string
+   # sql: ${TABLE}.stable_time ;;
+   # label: "Stable Time"
+  #}
 
   dimension: authorization_impacted {
     type: string
@@ -272,6 +329,52 @@ view: issue_custom_fields_pivot {
     type:  string
     sql: ${TABLE}.sprint ;;
     label: "Sprint"
+  }
+
+  dimension_group: start_date {
+    group_label: "Start Date"
+    type: time
+    # convert_tz: yes
+    timeframes: [
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.start_date ;;
+  }
+
+  dimension_group: start_date_timestamp {
+    group_label: "Start Date Timestamp"
+    type: time
+    # convert_tz: yes
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.start_date_timestamp ;;
+  }
+
+  dimension_group: end_date {
+    group_label: "End Date"
+    type: time
+    # convert_tz: yes
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql: ${TABLE}.end_date ;;
   }
 
   measure: count {

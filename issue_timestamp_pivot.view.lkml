@@ -123,7 +123,7 @@ view: issue_timestamp_pivot {
       quarter,
       year
     ]
-    sql: ${TABLE}.stable_time ;;
+    sql: to_timestamp(${TABLE}.stable_time) ;;
   }
 
   dimension_group: customer_impact {
