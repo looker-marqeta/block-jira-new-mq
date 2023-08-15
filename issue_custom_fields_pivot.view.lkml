@@ -304,7 +304,7 @@ view: issue_custom_fields_pivot {
       quarter,
       year
     ]
-    sql: ${TABLE}.stable_time ;;
+    sql: to_timestamp_ntz(${TABLE}.stable_time) ;;
   }
 
   #dimension: stable_time {
