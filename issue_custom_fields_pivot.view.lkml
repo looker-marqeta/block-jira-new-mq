@@ -422,4 +422,17 @@ view: issue_custom_fields_pivot {
     sql: ${detected_with_monitor_count}/${count} ;;
     value_format_name: percent_0
   }
+
+dimension_group: customer_impact {
+  type: duration
+  intervals: [hour, minute,day]
+  sql_start: ${impact_start_time_time} ;;
+  sql_end: ${stable_time_time} ;;
+}
+
+measure: days_of_impact {
+  type: sum
+  sql: round(${hours_customer_impact} / 24,0);;
+}
+
 }
