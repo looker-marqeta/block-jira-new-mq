@@ -12,6 +12,7 @@ view: issue_custom_fields_pivot {
             ,field.name as field_name
             ,array_agg(
               case when user.name is not null then user.name --first see if field_name maps to a user
+                when sprint.name is not null then sprint.name --next see if there is a match for sprints
                 when field_option.name is not null then field_option.name --next see if field_name maps to a field option
                 else imh.value end --default to multiselect history value
                 )
@@ -22,12 +23,13 @@ view: issue_custom_fields_pivot {
               and imh.is_active = 'TRUE'
           join fivetran.jira.field
               on imh.field_id = field.id
-              and field.name not in ('Epic Link')
               and field.is_array = 'TRUE'
           left join fivetran.jira.field_option field_option
               on imh.value = field_option.id::varchar
           left join fivetran.jira.user user
               on imh.value = user.id
+          left join fivetran.jira.sprint sprint
+              on imh.value = sprint.id::varchar
         group by 1,2,3
 
 
@@ -38,7 +40,8 @@ view: issue_custom_fields_pivot {
             issue.key
             ,issue.id as issue_id
             ,field.name as field_name
-             ,case when user.name is not null then user.name
+             ,case when field.name = 'Epic Link' then epic.name
+                 when user.name is not null then user.name
                  when field_option.name is not null then field_option.name
                  else ifh.value
                 end as field_value
@@ -48,30 +51,12 @@ view: issue_custom_fields_pivot {
               and ifh.is_active = 'TRUE'
           join fivetran.jira.field
               on ifh.field_id = field.id
-              and field.name not in ('Epic Link')
               and field.is_array = 'FALSE'
           left join fivetran.jira.field_option field_option
               on ifh.value = field_option.id::varchar
           left join fivetran.jira.user user
               on ifh.value = user.id
 
-          UNION ALL
-
-          --specific join to get the Epic Name
-          select
-            issue.key
-            ,issue.id as issue_id
-            ,'Epic Name' as field_name
-            ,epic.name as field_value --epic name
-          from fivetran.jira.issue issue
-          join fivetran.jira.issue_field_history ifh
-              on issue.id = ifh.issue_id
-              and ifh.is_active = 'TRUE'
-          join fivetran.jira.field
-              on ifh.field_id = field.id
-              and field.name in ('Epic Link')
-          left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
-              on ifh.value = epic.id::varchar
 
         )
         --pivot results of above sub-query union to create columns for each field_name; can take max(field_value) since there's 1:1 relationship
@@ -86,7 +71,7 @@ view: issue_custom_fields_pivot {
           ,'Product Stage'
           ,'ProdOps Category'
           ,'B&MM product'
-          ,'Epic Name'
+          ,'Epic Link'
           ,'Incident-Severity'
           ,'Identification Source'
           ,'Incident-Repeat Outage'
@@ -98,6 +83,7 @@ view: issue_custom_fields_pivot {
           ,'Stable Time'
           ,'Authorization Impacted'
           ,'Due Date (Risk)'
+          ,'Sprint'
           )) as p(
                   key
                   ,issue_id
@@ -111,7 +97,7 @@ view: issue_custom_fields_pivot {
                   ,product_stage
                   ,prodops_category
                   ,bmm_product
-                  ,epic_name
+                  ,epic_link
                   ,incident_severity
                   ,identification_source
                   ,incident_repeat_outage
@@ -123,6 +109,7 @@ view: issue_custom_fields_pivot {
                   ,stable_time
                   ,authorization_impacted
                   ,due_date_risk
+                  ,sprint
                   )
 ;;
 
@@ -191,9 +178,10 @@ view: issue_custom_fields_pivot {
     sql: ${TABLE}.bmm_product ;;
   }
 
-  dimension: epic_name {
+  dimension: epic_link {
     type:  string
-    sql: ${TABLE}.epic_name ;;
+    sql: ${TABLE}.epic_link ;;
+    label: "Epic Link"
   }
 
   dimension: incident_severity {
@@ -276,6 +264,12 @@ view: issue_custom_fields_pivot {
     type: string
     sql: ${TABLE}.due_date_risk ;;
     label: "Due Date (Risk)"
+  }
+
+  dimension: sprint {
+    type:  string
+    sql: ${TABLE}.sprint ;;
+    label: "Sprint"
   }
 
   measure: count {
