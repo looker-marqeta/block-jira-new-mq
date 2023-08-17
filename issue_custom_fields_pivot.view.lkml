@@ -92,6 +92,8 @@ view: issue_custom_fields_pivot {
           ,'Start Date'
           ,'Start Date Timestamp'
           ,'End Date'
+          ,'Involved Teams'
+          ,'Team Owning Incident'
           )) as p(
                   key
                   ,issue_id
@@ -121,6 +123,8 @@ view: issue_custom_fields_pivot {
                   ,start_date
                   ,start_date_timestamp
                   ,end_date
+                  ,involved_teams
+                  ,team_owning_incident
                   )
 ;;
 
@@ -434,5 +438,17 @@ measure: days_of_impact {
   type: sum
   sql: round(${hours_customer_impact} / 24,0);;
 }
+
+  dimension: involved_teams {
+    type: string
+    sql: ${TABLE}.involved_teams ;;
+    label: "Involved Teams"
+  }
+
+  dimension: team_owning_incident {
+    type: string
+    sql: ${TABLE}.team_owning_incident ;;
+    label: "Team Owning Incident"
+  }
 
 }
