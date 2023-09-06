@@ -134,7 +134,6 @@ view: issue_custom_fields_pivot {
   dimension: key {
      type: string
      sql: ${TABLE}.key ;;
-     primary_key: yes
    }
 
   dimension: issue_id {
