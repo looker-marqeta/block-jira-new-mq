@@ -94,6 +94,7 @@ view: issue_custom_fields_pivot {
           ,'End Date'
           ,'Involved Teams'
           ,'Team Owning Incident'
+          ,'Severity (SEC)'
           )) as p(
                   key
                   ,issue_id
@@ -125,6 +126,7 @@ view: issue_custom_fields_pivot {
                   ,end_date
                   ,involved_teams
                   ,team_owning_incident
+                  ,severity_sec
                   )
 ;;
 
@@ -449,5 +451,12 @@ measure: days_of_impact {
     sql: ${TABLE}.team_owning_incident ;;
     label: "Team Owning Incident"
   }
+
+  dimension: severity_sec {
+    type: string
+    sql: ${TABLE}.severity_sec ;;
+    label: "Severity (SEC)"
+  }
+
 
 }
