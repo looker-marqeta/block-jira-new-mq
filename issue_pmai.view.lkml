@@ -20,7 +20,7 @@ view: issue_pmai {
               ii.id as inci_id
               ,link.related_issue_id as pmai_tracker_epic_id
               ,issue.key as pmai_tracker_epic_key
-          from tmp_inci_issues ii
+          from inci_issues ii
           join fivetran.jira.issue_link link
               on ii.id = link.issue_id
           join fivetran.jira.issue
@@ -42,7 +42,7 @@ view: issue_pmai {
           ,priority.name as pmai_priority
           ,user.name as pmai_assignee
       from fivetran.jira.issue
-      join tmp_pmai pm
+      join pmai pm
           on issue.parent_id = pm.pmai_tracker_epic_id --get all tickets in the pmai tracker epic; these are pmai tickets
       left join fivetran.jira.status --status for pmai tickets
           on issue.status = status.id
