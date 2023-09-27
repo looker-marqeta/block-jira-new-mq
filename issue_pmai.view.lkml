@@ -41,6 +41,8 @@ view: issue_pmai {
           ,status.name as pmai_status
           ,priority.name as pmai_priority
           ,user.name as pmai_assignee
+          ,project.key as pmai_project_key
+          ,project.name as pmai_project_name
       from fivetran.jira.issue
       join pmai pm
           on issue.parent_id = pm.pmai_tracker_epic_id --get all tickets in the pmai tracker epic; these are pmai tickets
@@ -50,6 +52,8 @@ view: issue_pmai {
           on issue.priority = priority.id
       left join fivetran.jira.user
           on issue.assignee = user.id
+      left join fivetran.jira.project
+          on issue.project = project.id
       where issue.summary not ilike 'PLACEHOLDER | Delete after adding PMAIs%'
       ;;
 
@@ -120,6 +124,16 @@ view: issue_pmai {
   dimension: pmai_assignee {
     type:  string
     sql: ${TABLE}.pmai_assignee ;;
+  }
+
+  dimension: pmai_project_key {
+    type:  string
+    sql: ${TABLE}.pmai_project_key ;;
+  }
+
+  dimension: pmai_project_name {
+    type:  string
+    sql: ${TABLE}.pmai_project_name ;;
   }
 
   measure: count {
