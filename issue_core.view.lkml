@@ -21,7 +21,7 @@ view: issue_core {
     type: string
     sql: ${TABLE}.key ;;
     link: {
-      url:"http://looker.atlassian.net/browse/{{ value }}"
+      url:"http://marqeta.atlassian.net/browse/{{ value }}"
       label: "View in Jira"
     }
   }
