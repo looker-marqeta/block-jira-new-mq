@@ -95,6 +95,7 @@ view: issue_custom_fields_pivot {
           ,'Involved Teams'
           ,'Team Owning Incident'
           ,'Severity (SEC)'
+          ,'L3 Responsible'
           )) as p(
                   key
                   ,issue_id
@@ -127,6 +128,7 @@ view: issue_custom_fields_pivot {
                   ,involved_teams
                   ,team_owning_incident
                   ,severity_sec
+                  ,l3_responsible
                   )
 ;;
 
@@ -458,5 +460,10 @@ measure: days_of_impact {
     label: "Severity (SEC)"
   }
 
+  dimension: l3_responsible {
+    type: string
+    sql: ${TABLE}.l3_responsible ;;
+    label: "L3 Responsible"
+  }
 
 }
