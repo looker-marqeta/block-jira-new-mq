@@ -336,4 +336,9 @@ view: issue_core {
     fields: [number_of_open_issues, number_of_open_issues_this_month, number_of_issues_closed_this_month, number_of_issues_closed_last_month]
   }
 
+  dimension: fivetran_deleted {
+    type: string
+    sql: ${TABLE}._fivetran_deleted ;;
+  }
+
 }
