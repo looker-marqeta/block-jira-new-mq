@@ -341,4 +341,8 @@ view: issue_core {
     sql: ${TABLE}._fivetran_deleted ;;
   }
 
+  dimension: parent_id {
+    type: string
+    sql: ${TABLE}.parent_id ;;
+  }
 }
