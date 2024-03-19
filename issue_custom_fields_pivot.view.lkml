@@ -96,6 +96,12 @@ view: issue_custom_fields_pivot {
           ,'Team Owning Incident'
           ,'Severity (SEC)'
           ,'L3 Responsible'
+          ,'Request Type'
+          ,'Reporter'
+          ,'Bank'
+          ,'Issue Type'
+          ,'SLA'
+          ,'Watchers'
           )) as p(
                   key
                   ,issue_id
@@ -129,6 +135,12 @@ view: issue_custom_fields_pivot {
                   ,team_owning_incident
                   ,severity_sec
                   ,l3_responsible
+                  ,request_type
+                  ,reporter
+                  ,bank
+                  ,issue_type
+                  ,sla
+                  ,watchers
                   )
 ;;
 
@@ -464,6 +476,42 @@ measure: days_of_impact {
     type: string
     sql: ${TABLE}.l3_responsible ;;
     label: "L3 Responsible"
+  }
+
+  dimension: request_type {
+    type: string
+    sql: ${TABLE}.request_type ;;
+    label: "Request Type"
+  }
+
+  dimension: reporter {
+    type: string
+    sql: ${TABLE}.reporter ;;
+    label: "Reporter"
+  }
+
+  dimension: bank {
+    type: string
+    sql: ${TABLE}.bank ;;
+    label: "Bank"
+  }
+
+  dimension: issue_type {
+    type: string
+    sql: ${TABLE}.issue_type ;;
+    label: "Issue Type"
+  }
+
+  dimension: sla {
+    type: string
+    sql: ${TABLE}.sla ;;
+    label: "SLA"
+  }
+
+  dimension: watchers {
+    type: string
+    sql: ${TABLE}.watchers ;;
+    label: "Watchers"
   }
 
 }
