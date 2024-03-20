@@ -33,124 +33,128 @@ view: issue_custom_fields_pivot {
         group by 1,2,3
 
 
-          UNION ALL
+      UNION ALL
 
-          --pull all non-array field values
-          select
-            issue.key
-            ,issue.id as issue_id
-            ,case when field.name = 'Start Date' and field_id = 'customfield_15995' then 'Start Date Timestamp' --multiple Start Date fields; this one is the ts version
-                else field.name
-                end as field_name
-             ,case when field.name = 'Epic Link' then epic.name
-                 when user.name is not null then user.name
-                 when field_option.name is not null then field_option.name
-                 else ifh.value
-                end as field_value
-          from fivetran.jira.issue issue
-          join fivetran.jira.issue_field_history ifh -- for fields with only 1 option
-              on issue.id = ifh.issue_id
-              and ifh.is_active = 'TRUE'
-          join fivetran.jira.field
-              on ifh.field_id = field.id
-              and field.is_array = 'FALSE'
-          left join fivetran.jira.field_option field_option
-              on ifh.value = field_option.id::varchar
-          left join fivetran.jira.user user
-              on ifh.value = user.id
-          left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
-              on ifh.value = epic.id::varchar
-          where field_id not in ('customfield_15076', 'customfield_15230') -- Start Date fields that should be inactive
+      --pull all non-array field values
+      select
+      issue.key
+      ,issue.id as issue_id
+      ,case when field.name = 'Start Date' and field_id = 'customfield_15995' then 'Start Date Timestamp' --multiple Start Date fields; this one is the ts version
+      else field.name
+      end as field_name
+      ,case when field.name = 'Epic Link' then epic.name
+      when user.name is not null then user.name
+      when field_option.name is not null then field_option.name
+      else ifh.value
+      end as field_value
+      from fivetran.jira.issue issue
+      join fivetran.jira.issue_field_history ifh -- for fields with only 1 option
+      on issue.id = ifh.issue_id
+      and ifh.is_active = 'TRUE'
+      join fivetran.jira.field
+      on ifh.field_id = field.id
+      and field.is_array = 'FALSE'
+      left join fivetran.jira.field_option field_option
+      on ifh.value = field_option.id::varchar
+      left join fivetran.jira.user user
+      on ifh.value = user.id
+      left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
+      on ifh.value = epic.id::varchar
+      where field_id not in ('customfield_15076', 'customfield_15230') -- Start Date fields that should be inactive
 
 
-        )
-        --pivot results of above sub-query union to create columns for each field_name; can take max(field_value) since there's 1:1 relationship
-        pivot (max(field_value) for field_name in (
-          'Labels'
-          ,'Project Start'
-          ,'Project Complete'
-          ,'Project Size'
-          ,'V2MOM Method FY22'
-          ,'V2MOM Method FY23'
-          ,'Stakeholders'
-          ,'Product Stage'
-          ,'ProdOps Category'
-          ,'B&MM product'
-          ,'Epic Link'
-          ,'Incident-Severity'
-          ,'Identification Source'
-          ,'Incident-Repeat Outage'
-          ,'Incident-Type'
-          ,'VP Responsible'
-          ,'Partner'
-          ,'Impact Start Time'
-          ,'Detection Time'
-          ,'Stable Time'
-          ,'Authorization Impacted'
-          ,'Due Date (Risk)'
-          ,'Sprint'
-          ,'Start Date'
-          ,'Start Date Timestamp'
-          ,'End Date'
-          ,'Involved Teams'
-          ,'Team Owning Incident'
-          ,'Severity (SEC)'
-          ,'L3 Responsible'
-          ,'Request Type'
-          ,'Reporter'
-          ,'Bank'
-          ,'Issue Type'
-          ,'SLA'
-          ,'Watchers'
-          )) as p(
-                  key
-                  ,issue_id
-                  ,labels
-                  ,project_start
-                  ,project_complete
-                  ,project_size
-                  ,v2mom_method_fy22
-                  ,v2mom_method_fy23
-                  ,stakeholders
-                  ,product_stage
-                  ,prodops_category
-                  ,bmm_product
-                  ,epic_link
-                  ,incident_severity
-                  ,identification_source
-                  ,incident_repeat_outage
-                  ,incident_type
-                  ,vp_responsible
-                  ,partner
-                  ,impact_start_time
-                  ,detection_time
-                  ,stable_time
-                  ,authorization_impacted
-                  ,due_date_risk
-                  ,sprint
-                  ,start_date
-                  ,start_date_timestamp
-                  ,end_date
-                  ,involved_teams
-                  ,team_owning_incident
-                  ,severity_sec
-                  ,l3_responsible
-                  ,request_type
-                  ,reporter
-                  ,bank
-                  ,issue_type
-                  ,sla
-                  ,watchers
-                  )
-;;
+      )
+      --pivot results of above sub-query union to create columns for each field_name; can take max(field_value) since there's 1:1 relationship
+      pivot (max(field_value) for field_name in (
+      'Labels'
+      ,'Project Start'
+      ,'Project Complete'
+      ,'Project Size'
+      ,'V2MOM Method FY22'
+      ,'V2MOM Method FY23'
+      ,'Stakeholders'
+      ,'Product Stage'
+      ,'ProdOps Category'
+      ,'B&MM product'
+      ,'Epic Link'
+      ,'Incident-Severity'
+      ,'Identification Source'
+      ,'Incident-Repeat Outage'
+      ,'Incident-Type'
+      ,'VP Responsible'
+      ,'Partner'
+      ,'Impact Start Time'
+      ,'Detection Time'
+      ,'Stable Time'
+      ,'Authorization Impacted'
+      ,'Due Date (Risk)'
+      ,'Sprint'
+      ,'Start Date'
+      ,'Start Date Timestamp'
+      ,'End Date'
+      ,'Involved Teams'
+      ,'Team Owning Incident'
+      ,'Severity (SEC)'
+      ,'L3 Responsible'
+      ,'Request Type'
+      ,'Reporter'
+      ,'Bank'
+      ,'Issue Type'
+      ,'SLA'
+      ,'Watchers'
+      ,'Issuer Support Type'
+      ,'Task Type'
+      )) as p(
+      key
+      ,issue_id
+      ,labels
+      ,project_start
+      ,project_complete
+      ,project_size
+      ,v2mom_method_fy22
+      ,v2mom_method_fy23
+      ,stakeholders
+      ,product_stage
+      ,prodops_category
+      ,bmm_product
+      ,epic_link
+      ,incident_severity
+      ,identification_source
+      ,incident_repeat_outage
+      ,incident_type
+      ,vp_responsible
+      ,partner
+      ,impact_start_time
+      ,detection_time
+      ,stable_time
+      ,authorization_impacted
+      ,due_date_risk
+      ,sprint
+      ,start_date
+      ,start_date_timestamp
+      ,end_date
+      ,involved_teams
+      ,team_owning_incident
+      ,severity_sec
+      ,l3_responsible
+      ,request_type
+      ,reporter
+      ,bank
+      ,issue_type
+      ,sla
+      ,watchers
+      ,issuer_support_type
+      ,task_type
+      )
+      ;;
 
   }
 
 
   dimension: key {
-     type: string
-     sql: ${TABLE}.key ;;
-   }
+    type: string
+    sql: ${TABLE}.key ;;
+  }
 
   dimension: issue_id {
     type: string
@@ -237,7 +241,7 @@ view: issue_custom_fields_pivot {
       # Possibly more when statements
       else: "Null"
     }
-}
+  }
 
   dimension: identification_source {
     type:  string
@@ -304,11 +308,11 @@ view: issue_custom_fields_pivot {
     sql: to_timestamp_ntz(${TABLE}.detection_time) ;;
   }
 
- # dimension: detection_time {
- #   type: string
- #   sql: ${TABLE}.detection_time ;;
- #   label: "Detection Time"
- # }
+  # dimension: detection_time {
+  #   type: string
+  #   sql: ${TABLE}.detection_time ;;
+  #   label: "Detection Time"
+  # }
 
   dimension_group: stable_time {
     group_label: "Stable Time"
@@ -327,9 +331,9 @@ view: issue_custom_fields_pivot {
   }
 
   #dimension: stable_time {
-   # type: string
-   # sql: ${TABLE}.stable_time ;;
-   # label: "Stable Time"
+  # type: string
+  # sql: ${TABLE}.stable_time ;;
+  # label: "Stable Time"
   #}
 
   dimension: authorization_impacted {
@@ -442,17 +446,17 @@ view: issue_custom_fields_pivot {
     value_format_name: percent_0
   }
 
-dimension_group: customer_impact {
-  type: duration
-  intervals: [hour, minute,day]
-  sql_start: ${impact_start_time_time} ;;
-  sql_end: ${stable_time_time} ;;
-}
+  dimension_group: customer_impact {
+    type: duration
+    intervals: [hour, minute,day]
+    sql_start: ${impact_start_time_time} ;;
+    sql_end: ${stable_time_time} ;;
+  }
 
-measure: days_of_impact {
-  type: sum
-  sql: round(${hours_customer_impact} / 24,0);;
-}
+  measure: days_of_impact {
+    type: sum
+    sql: round(${hours_customer_impact} / 24,0);;
+  }
 
   dimension: involved_teams {
     type: string
@@ -512,6 +516,18 @@ measure: days_of_impact {
     type: string
     sql: ${TABLE}.watchers ;;
     label: "Watchers"
+  }
+
+  dimension: issuer_support_type {
+    type: string
+    sql: ${TABLE}.issuer_support_type ;;
+    label: "Issuer Support Type"
+  }
+
+  dimension: task_type {
+    type: string
+    sql: ${TABLE}.task_type ;;
+    label: "Task Type"
   }
 
 }
