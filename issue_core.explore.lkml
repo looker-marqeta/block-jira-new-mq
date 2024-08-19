@@ -10,16 +10,6 @@ explore: issue_core {
     sql_on: ${issue.issue_type} = ${issue_type.id} ;;
     relationship: many_to_one
   }
-  join: issue_sprint {
-    type: left_outer
-    sql_on: ${issue_sprint.issue_id} = ${issue.id} ;;
-    relationship: many_to_one
-  }
-  join: sprint {
-    type: left_outer
-    sql_on: ${issue_sprint.sprint_id} = ${sprint.id} ;;
-    relationship: many_to_one
-  }
   join:  priority {
     type:  left_outer
     sql_on: ${issue.priority} = ${priority.id} ;;
@@ -46,8 +36,20 @@ explore: issue_core {
     relationship: one_to_many
   }
   join: epic {
-    type: left_outer
-    sql_on: ${issue.epic_name} = ${epic.name} ;;
-    relationship: many_to_one
+    type:  left_outer
+    sql_on:  ${issue.summary} = ${epic.name} ;;
+    relationship: one_to_many
   }
+  join: issue_custom_fields_pivot {
+    type:  left_outer
+    sql_on: ${issue.id} = ${issue_custom_fields_pivot.issue_id} ;;
+    relationship:  one_to_many
+  }
+  join: issue_pmai {
+    type:  left_outer
+    sql_on: ${issue.id} = ${issue_pmai.inci_id} ;;
+    relationship:  one_to_many
+  }
+
+
 }

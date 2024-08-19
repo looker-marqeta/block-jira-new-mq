@@ -21,7 +21,7 @@ view: issue_core {
     type: string
     sql: ${TABLE}.key ;;
     link: {
-      url:"http://looker.atlassian.net/browse/{{ value }}"
+      url:"http://marqeta.atlassian.net/browse/{{ value }}"
       label: "View in Jira"
     }
   }
@@ -75,7 +75,8 @@ view: issue_core {
       week,
       month,
       quarter,
-      year
+      year,
+      month_name
     ]
     sql: ${TABLE}.created ;;
   }
@@ -108,11 +109,6 @@ view: issue_core {
   dimension: environment {
     type: string
     sql: ${TABLE}.environment ;;
-  }
-
-  dimension: epic_name {
-    type: string
-    sql: ${TABLE}.epic_name ;;
   }
 
   dimension: issue_type {
@@ -340,4 +336,13 @@ view: issue_core {
     fields: [number_of_open_issues, number_of_open_issues_this_month, number_of_issues_closed_this_month, number_of_issues_closed_last_month]
   }
 
+  dimension: fivetran_deleted {
+    type: string
+    sql: ${TABLE}._fivetran_deleted ;;
+  }
+
+  dimension: parent_id {
+    type: string
+    sql: ${TABLE}.parent_id ;;
+  }
 }

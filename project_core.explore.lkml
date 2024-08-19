@@ -12,14 +12,19 @@ explore: project_core {
     sql_on: ${issue.issue_type} = ${issue_type.id} ;;
     relationship: many_to_one
   }
-  join: issue_sprint {
+  join: issue_board {
     type: left_outer
-    sql_on: ${issue_sprint.issue_id} = ${issue.id} ;;
+    sql_on: ${issue_board.issue_id} = ${issue.id} ;;
+    relationship: many_to_one
+  }
+  join: board {
+    type: left_outer
+    sql_on: ${board.id} = ${issue_board.board_id} ;;
     relationship: many_to_one
   }
   join: sprint {
     type: left_outer
-    sql_on: ${issue_sprint.sprint_id} = ${sprint.id} ;;
+    sql_on: ${sprint.board_id} = ${board.id} ;;
     relationship: many_to_one
   }
   join:  priority {

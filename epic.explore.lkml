@@ -1,8 +1,13 @@
 explore: epic_core {
   extension: required
+  join: issue_custom_fields_pivot {
+    type: left_outer
+    sql_on: ${epic.name} = ${issue_custom_fields_pivot.epic_link} ;;
+    relationship: one_to_many
+  }
   join: issue {
     type: left_outer
-    sql_on: ${epic.name} = ${issue.epic_name} ;;
+    sql_on: ${issue_custom_fields_pivot.issue_id} = ${issue.id} ;;
     relationship: one_to_many
   }
   join:  issue_type {
@@ -10,14 +15,19 @@ explore: epic_core {
     sql_on: ${issue.issue_type} = ${issue_type.id} ;;
     relationship: many_to_one
   }
-  join: issue_sprint {
+  join: issue_board {
     type: left_outer
-    sql_on: ${issue_sprint.issue_id} = ${issue.id} ;;
+    sql_on: ${issue_board.issue_id} = ${issue.id} ;;
+    relationship: many_to_one
+  }
+  join: board {
+    type: left_outer
+    sql_on: ${issue_board.board_id} = ${board.id} ;;
     relationship: many_to_one
   }
   join: sprint {
     type: left_outer
-    sql_on: ${issue_sprint.sprint_id} = ${sprint.id} ;;
+    sql_on: ${sprint.board_id} = ${board.id} ;;
     relationship: many_to_one
   }
   join:  priority {
