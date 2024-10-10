@@ -94,6 +94,7 @@ view: issue_custom_fields_pivot {
           ,'End Date'
           ,'Involved Teams'
           ,'Team Owning Incident'
+          ,'Story Points (Estimate)'
           )) as p(
                   key
                   ,issue_id
@@ -125,6 +126,7 @@ view: issue_custom_fields_pivot {
                   ,end_date
                   ,involved_teams
                   ,team_owning_incident
+                  ,story_points_estimate
                   )
 ;;
 
@@ -388,6 +390,11 @@ view: issue_custom_fields_pivot {
     sql: to_timestamp_ntz(${TABLE}.end_date) ;;
   }
 
+  dimension: story_points_estimate {
+    type: number
+    sql:  ${TABLE}.story_points_estimate ;;
+  }
+
   measure: count {
     type: count
     drill_fields: []
@@ -407,6 +414,11 @@ view: issue_custom_fields_pivot {
     type: number
     sql: ${repeated_inci_count} / ${count};;
     value_format_name: percent_0
+  }
+
+  measure: story_points_estimate_sum {
+    type: sum
+    sql: ${story_points_estimate} ;;
   }
 
   measure: detected_with_monitor_count {
