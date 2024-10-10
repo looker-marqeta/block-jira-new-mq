@@ -1,7 +1,6 @@
 view: issue_custom_fields_pivot {
   derived_table: {
     sql:
-
         select
           *
         from (
@@ -33,35 +32,34 @@ view: issue_custom_fields_pivot {
         group by 1,2,3
 
 
-          UNION ALL
+      UNION ALL
 
-          --pull all non-array field values
-          select
-            issue.key
-            ,issue.id as issue_id
-            ,case when field.name = 'Start Date' and field_id = 'customfield_15995' then 'Start Date Timestamp' --multiple Start Date fields; this one is the ts version
-                else field.name
-                end as field_name
-             ,case when field.name = 'Epic Link' then epic.name
-                 when user.name is not null then user.name
-                 when field_option.name is not null then field_option.name
-                 else ifh.value
-                end as field_value
-          from fivetran.jira.issue issue
-          join fivetran.jira.issue_field_history ifh -- for fields with only 1 option
-              on issue.id = ifh.issue_id
-              and ifh.is_active = 'TRUE'
-          join fivetran.jira.field
-              on ifh.field_id = field.id
-              and field.is_array = 'FALSE'
-          left join fivetran.jira.field_option field_option
-              on ifh.value = field_option.id::varchar
-          left join fivetran.jira.user user
-              on ifh.value = user.id
-          left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
-              on ifh.value = epic.id::varchar
-          where field_id not in ('customfield_15076', 'customfield_15230') -- Start Date fields that should be inactive
-
+      --pull all non-array field values
+      select
+      issue.key
+      ,issue.id as issue_id
+      ,case when field.name = 'Start Date' and field_id = 'customfield_15995' then 'Start Date Timestamp' --multiple Start Date fields; this one is the ts version
+      else field.name
+      end as field_name
+      ,case when field.name = 'Epic Link' then epic.name
+      when user.name is not null then user.name
+      when field_option.name is not null then field_option.name
+      else ifh.value
+      end as field_value
+      from fivetran.jira.issue issue
+      join fivetran.jira.issue_field_history ifh -- for fields with only 1 option
+      on issue.id = ifh.issue_id
+      and ifh.is_active = 'TRUE'
+      join fivetran.jira.field
+      on ifh.field_id = field.id
+      and field.is_array = 'FALSE'
+      left join fivetran.jira.field_option field_option
+      on ifh.value = field_option.id::varchar
+      left join fivetran.jira.user user
+      on ifh.value = user.id
+      left join fivetran.jira.epic epic  -- specifically just for the Epic Link/Name
+      on ifh.value = epic.id::varchar
+      where field_id not in ('customfield_15076', 'customfield_15230') -- Start Date fields that should be inactive
 
         )
         --pivot results of above sub-query union to create columns for each field_name; can take max(field_value) since there's 1:1 relationship
@@ -129,14 +127,13 @@ view: issue_custom_fields_pivot {
                   ,story_points_estimate
                   )
 ;;
-
   }
 
 
   dimension: key {
-     type: string
-     sql: ${TABLE}.key ;;
-   }
+    type: string
+    sql: ${TABLE}.key ;;
+  }
 
   dimension: issue_id {
     type: string
@@ -223,7 +220,7 @@ view: issue_custom_fields_pivot {
       # Possibly more when statements
       else: "Null"
     }
-}
+  }
 
   dimension: identification_source {
     type:  string
@@ -290,11 +287,11 @@ view: issue_custom_fields_pivot {
     sql: to_timestamp_ntz(${TABLE}.detection_time) ;;
   }
 
- # dimension: detection_time {
- #   type: string
- #   sql: ${TABLE}.detection_time ;;
- #   label: "Detection Time"
- # }
+  # dimension: detection_time {
+  #   type: string
+  #   sql: ${TABLE}.detection_time ;;
+  #   label: "Detection Time"
+  # }
 
   dimension_group: stable_time {
     group_label: "Stable Time"
@@ -313,9 +310,9 @@ view: issue_custom_fields_pivot {
   }
 
   #dimension: stable_time {
-   # type: string
-   # sql: ${TABLE}.stable_time ;;
-   # label: "Stable Time"
+  # type: string
+  # sql: ${TABLE}.stable_time ;;
+  # label: "Stable Time"
   #}
 
   dimension: authorization_impacted {
@@ -438,17 +435,17 @@ view: issue_custom_fields_pivot {
     value_format_name: percent_0
   }
 
-dimension_group: customer_impact {
-  type: duration
-  intervals: [hour, minute,day]
-  sql_start: ${impact_start_time_time} ;;
-  sql_end: ${stable_time_time} ;;
-}
+  dimension_group: customer_impact {
+    type: duration
+    intervals: [hour, minute,day]
+    sql_start: ${impact_start_time_time} ;;
+    sql_end: ${stable_time_time} ;;
+  }
 
-measure: days_of_impact {
-  type: sum
-  sql: round(${hours_customer_impact} / 24,0);;
-}
+  measure: days_of_impact {
+    type: sum
+    sql: round(${hours_customer_impact} / 24,0);;
+  }
 
   dimension: involved_teams {
     type: string
@@ -460,6 +457,66 @@ measure: days_of_impact {
     type: string
     sql: ${TABLE}.team_owning_incident ;;
     label: "Team Owning Incident"
+  }
+
+  dimension: severity_sec {
+    type: string
+    sql: ${TABLE}.severity_sec ;;
+    label: "Severity (SEC)"
+  }
+
+  dimension: l3_responsible {
+    type: string
+    sql: ${TABLE}.l3_responsible ;;
+    label: "L3 Responsible"
+  }
+
+  dimension: request_type {
+    type: string
+    sql: ${TABLE}.request_type ;;
+    label: "Request Type"
+  }
+
+  dimension: reporter {
+    type: string
+    sql: ${TABLE}.reporter ;;
+    label: "Reporter"
+  }
+
+  dimension: bank {
+    type: string
+    sql: ${TABLE}.bank ;;
+    label: "Bank"
+  }
+
+  dimension: issue_type {
+    type: string
+    sql: ${TABLE}.issue_type ;;
+    label: "Issue Type"
+  }
+
+  dimension: sla {
+    type: string
+    sql: ${TABLE}.sla ;;
+    label: "SLA"
+  }
+
+  dimension: watchers {
+    type: string
+    sql: ${TABLE}.watchers ;;
+    label: "Watchers"
+  }
+
+  dimension: issuer_support_type {
+    type: string
+    sql: ${TABLE}.issuer_support_type ;;
+    label: "Issuer Support Type"
+  }
+
+  dimension: task_type {
+    type: string
+    sql: ${TABLE}.task_type ;;
+    label: "Task Type"
   }
 
 }

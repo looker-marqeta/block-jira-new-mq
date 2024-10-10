@@ -42,6 +42,11 @@ explore: project_core {
     sql_on: ${status.status_category_id} = ${status_category.id} ;;
     relationship: many_to_one
   }
+  join:  user {
+    type:  left_outer
+    sql_on: ${issue.assignee} = ${user.id} ;;
+    relationship: many_to_one
+  }
   join: issue_custom_fields_pivot {
     type:  left_outer
     sql_on: ${issue.id} = ${issue_custom_fields_pivot.issue_id} ;;
