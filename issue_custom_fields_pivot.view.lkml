@@ -93,6 +93,16 @@ view: issue_custom_fields_pivot {
           ,'Involved Teams'
           ,'Team Owning Incident'
           ,'Story Points (Estimate)'
+          ,'Reporter'
+          ,'Severity (SEC)'
+          ,'L3 Responsible'
+          ,'Request Type'
+          ,'Bank'
+          ,'Issue Type'
+          ,'SLA'
+          ,'Watchers'
+          ,'Issue Support Type'
+          ,'Task Type'
           )) as p(
                   key
                   ,issue_id
@@ -125,6 +135,16 @@ view: issue_custom_fields_pivot {
                   ,involved_teams
                   ,team_owning_incident
                   ,story_points_estimate
+                  ,reporter
+                  ,severity_sec
+                  ,l3_responsible
+                  ,request_type
+                  ,bank
+                  ,issue_type
+                  ,sla
+                  ,watchers
+                  ,issuer_support_type
+                  ,task_type
                   )
 ;;
   }
